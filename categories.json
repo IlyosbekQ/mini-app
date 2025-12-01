@@ -1,0 +1,33 @@
+{
+  "Математика": [
+    {
+      "title": "Урок по пределам",
+      "url": "https://t.me/deleted_me/18"
+    },
+    {
+      "title": "Интегралы",
+      "url": "https://t.me/deleted_me/17"
+    },
+    {
+      "title": "Производные",
+      "url": "https://t.me/deleted_me/16"
+    }
+  ],
+  "Физика": [
+    {
+      "title": "Кинематика",
+      "url": "https://t.me/deleted_me/15"
+    },
+    {
+      "title": "Динамика",
+      "url": "https://t.me/deleted_me/14"
+    }
+  ],
+  "Химия": [
+    {
+      "title": "Органическая химия",
+      "url": "https://t.me/deleted_me/13"
+    }
+  ],
+  "Музыка": []
+}
