@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Channel Navigator</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, sans-serif; padding: 20px; background: #f5f5f9; }
+    select, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #ddd; }
+    #posts { margin-top: 16px; }
+    .post-btn { background: #0088cc; color: white; margin: 4px 0; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h2>📚 Channel Posts</h2>
+  <select id="categorySelect" onchange="loadPosts()">
+    <option value="">Select Category</option>
+  </select>
+
+  <div id="posts"></div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
