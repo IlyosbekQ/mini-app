@@ -8,7 +8,7 @@ import requests
 load_dotenv()
 
 BOT_TOKEN = os.getenv("BOT_TOKEN", "5975058740:AAEE7HBv0koieZUSk9Su8wFNAWK4W2-65tI")
-WEBAPP_URL = os.getenv("WEBAPP_URL", "https://nonmucous-unescheatable-ngoc.ngrok-free.dev")
+WEBAPP_URL = os.getenv("WEBAPP_URL", "https://mini-app-qh4y.vercel.app/")
 FASTAPI_URL = os.getenv("FASTAPI_URL", "http://localhost:8000")
 
 async def start_command(update: Update, context: CallbackContext):
@@ -17,15 +17,21 @@ async def start_command(update: Update, context: CallbackContext):
         [InlineKeyboardButton(
             "📱 Open Post Navigator",
             web_app=WebAppInfo(url=WEBAPP_URL)
+        )],
+        [InlineKeyboardButton(
+            "🔧 Admin Panel",
+            url=f"{WEBAPP_URL}/admin"
         )]
     ])
     
     await update.message.reply_text(
-        "Welcome to Post Navigator! 🚀\n\n"
-        "Click the button below to browse channel posts organized by categories.\n\n"
+        "👋 Welcome to Post Navigator! 🚀\n\n"
+        "📚 Browse channel posts organized by categories\n"
+        "🔧 Manage categories and posts via Admin Panel\n\n"
         "Commands:\n"
         "/start - Show this message\n"
         "/post - Post navigation message to channel\n"
+        "/admin - Get admin panel link\n"
         "/help - Show help",
         reply_markup=keyboard
     )
@@ -53,24 +59,53 @@ async def post_command(update: Update, context: CallbackContext):
     except Exception as e:
         await update.message.reply_text(f"❌ Error: {str(e)}")
 
-async def help_command(update: Update, context: CallbackContext):
-    """Handle /help command - SIMPLIFIED VERSION"""
-    help_text = f"""
-📚 Post Navigator Bot Help
+async def admin_command(update: Update, context: CallbackContext):
+    """Handle /admin command"""
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton(
+            "🔧 Open Admin Panel",
+            url=f"{WEBAPP_URL}/admin"
+        )]
+    ])
+    
+    await update.message.reply_text(
+        "🔧 *Admin Panel*\n\n"
+        "Manage categories and posts:\n"
+        "• Add/Delete categories\n"
+        "• Add/Edit/Delete posts\n"
+        "• Organize content\n\n"
+        "Click the button below to access:",
+        parse_mode="Markdown",
+        reply_markup=keyboard
+    )
 
-Commands:
-/start - Start the bot and open navigator
+async def help_command(update: Update, context: CallbackContext):
+    """Handle /help command"""
+    help_text = f"""
+📚 *Post Navigator Bot Help*
+
+🤖 *Commands:*
+/start - Start the bot and show main menu
 /post - Post navigation message to Telegram channel
+/admin - Access admin panel
 /help - Show this help message
 
-How to use:
-1. Click /start to open the post navigator
-2. Browse posts by categories
-3. Use /post to share navigator in channel
+📱 *Features:*
+• Browse posts by categories in Mini App
+• Admin panel for managing content
+• Easy navigation interface
 
-Admin Panel: {WEBAPP_URL}/admin
+🔗 *Links:*
+• Mini App: {WEBAPP_URL}
+• Admin Panel: {WEBAPP_URL}/admin
+
+💡 *How to use:*
+1. Click /start to see available options
+2. Use Mini App to browse posts
+3. Use Admin Panel to manage categories and posts
+4. Use /post to share navigator in channel
 """
-    await update.message.reply_text(help_text)
+    await update.message.reply_text(help_text, parse_mode="Markdown")
 
 async def error_handler(update: Update, context: CallbackContext):
     """Log errors"""
@@ -84,16 +119,26 @@ def main():
     # Add command handlers
     application.add_handler(CommandHandler("start", start_command))
     application.add_handler(CommandHandler("post", post_command))
+    application.add_handler(CommandHandler("admin", admin_command))
     application.add_handler(CommandHandler("help", help_command))
     
     # Add error handler
     application.add_error_handler(error_handler)
     
-    print("🤖 Bot is starting...")
-    print("✅ Bot is now running! Commands available:")
-    print("   /start - Open navigator")
+    print("=" * 50)
+    print("🤖 Post Navigator Bot Starting...")
+    print("=" * 50)
+    print("✅ Bot is now running!")
+    print("")
+    print("📱 Available Commands:")
+    print("   /start - Open main menu")
     print("   /post - Post to channel")
+    print("   /admin - Access admin panel")
     print("   /help - Show help")
+    print("")
+    print(f"🌐 Mini App URL: {WEBAPP_URL}")
+    print(f"🔧 Admin Panel: {WEBAPP_URL}/admin")
+    print("=" * 50)
     
     # Start polling
     application.run_polling()
