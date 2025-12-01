@@ -15,31 +15,31 @@ async def start_command(update: Update, context: CallbackContext):
     """Handle /start command"""
     keyboard = InlineKeyboardMarkup([
         [InlineKeyboardButton(
-            "📱 Open Post Navigator",
+            text="📱 Open Post Navigator",
             web_app=WebAppInfo(url=WEBAPP_URL)
         )],
         [InlineKeyboardButton(
-            "🔧 Admin Panel",
+            text="🔧 Admin Panel",
             url=f"{WEBAPP_URL}/admin"
         )]
     ])
     
     await update.message.reply_text(
-        "👋 Welcome to Post Navigator! 🚀\n\n"
-        "📚 Browse channel posts organized by categories\n"
-        "🔧 Manage categories and posts via Admin Panel\n\n"
-        "Commands:\n"
-        "/start - Show this message\n"
-        "/post - Post navigation message to channel\n"
-        "/admin - Get admin panel link\n"
-        "/help - Show help",
+        "👋 Добро пожаловать в Post Navigator! 🚀\n\n"
+        "📚 Просматривайте посты канала по категориям\n"
+        "🔧 Управляйте категориями через Админ Панель\n\n"
+        "Команды:\n"
+        "/start - Показать это сообщение\n"
+        "/post - Отправить навигационное сообщение в канал\n"
+        "/admin - Получить ссылку на админ панель\n"
+        "/help - Показать помощь",
         reply_markup=keyboard
     )
 
 async def post_command(update: Update, context: CallbackContext):
     """Handle /post command - post navigation message to channel"""
     try:
-        await update.message.reply_text("📢 Posting navigation message to channel...")
+        await update.message.reply_text("📢 Отправляю навигационное сообщение в канал...")
         
         # Call FastAPI endpoint to post message
         response = requests.post(f"{FASTAPI_URL}/api/post-navigation")
@@ -48,33 +48,34 @@ async def post_command(update: Update, context: CallbackContext):
             result = response.json()
             if result.get("status") == "success":
                 await update.message.reply_text(
-                    f"✅ Navigation message posted to channel!\n"
-                    f"Message ID: {result.get('message_id', 'N/A')}"
+                    f"✅ Навигационное сообщение отправлено в канал!\n"
+                    f"ID сообщения: {result.get('message_id', 'N/A')}"
                 )
             else:
-                await update.message.reply_text(f"❌ Error: {result.get('message', 'Unknown error')}")
+                await update.message.reply_text(f"❌ Ошибка: {result.get('message', 'Неизвестная ошибка')}")
         else:
-            await update.message.reply_text(f"❌ Server error: {response.status_code}")
+            await update.message.reply_text(f"❌ Ошибка сервера: {response.status_code}")
             
     except Exception as e:
-        await update.message.reply_text(f"❌ Error: {str(e)}")
+        await update.message.reply_text(f"❌ Ошибка: {str(e)}")
 
 async def admin_command(update: Update, context: CallbackContext):
     """Handle /admin command"""
     keyboard = InlineKeyboardMarkup([
         [InlineKeyboardButton(
-            "🔧 Open Admin Panel",
+            text="🔧 Открыть Админ Панель",
             url=f"{WEBAPP_URL}/admin"
         )]
     ])
     
     await update.message.reply_text(
-        "🔧 *Admin Panel*\n\n"
-        "Manage categories and posts:\n"
-        "• Add/Delete categories\n"
-        "• Add/Edit/Delete posts\n"
-        "• Organize content\n\n"
-        "Click the button below to access:",
+        "🔧 *Админ Панель*\n\n"
+        "Управляйте категориями и постами:\n"
+        "• Добавлять/Удалять категории\n"
+        "• Добавлять/Редактировать/Удалять посты\n"
+        "• Организовывать контент\n\n"
+        "Нажмите кнопку ниже для доступа:\n"
+        "🔑 Пароль: vvsh2024",
         parse_mode="Markdown",
         reply_markup=keyboard
     )
@@ -82,28 +83,32 @@ async def admin_command(update: Update, context: CallbackContext):
 async def help_command(update: Update, context: CallbackContext):
     """Handle /help command"""
     help_text = f"""
-📚 *Post Navigator Bot Help*
+📚 *Post Navigator Bot Помощь*
 
-🤖 *Commands:*
-/start - Start the bot and show main menu
-/post - Post navigation message to Telegram channel
-/admin - Access admin panel
-/help - Show this help message
+🤖 *Команды:*
+/start - Запустить бота и показать главное меню
+/post - Отправить навигационное сообщение в канал
+/admin - Открыть админ панель
+/help - Показать это сообщение
 
-📱 *Features:*
-• Browse posts by categories in Mini App
-• Admin panel for managing content
-• Easy navigation interface
+📱 *Функции:*
+• Просмотр постов по категориям в Mini App
+• Админ панель для управления контентом
+• Удобный интерфейс навигации
 
-🔗 *Links:*
+🔗 *Ссылки:*
 • Mini App: {WEBAPP_URL}
 • Admin Panel: {WEBAPP_URL}/admin
 
-💡 *How to use:*
-1. Click /start to see available options
-2. Use Mini App to browse posts
-3. Use Admin Panel to manage categories and posts
-4. Use /post to share navigator in channel
+🔑 *Админ доступ:*
+• Пароль: vvsh2024
+• Доступен только для авторизованных пользователей
+
+💡 *Как использовать:*
+1. Нажмите /start чтобы увидеть доступные опции
+2. Используйте Mini App для просмотра постов
+3. Используйте Админ Панель для управления категориями
+4. Используйте /post чтобы поделиться навигатором в канале
 """
     await update.message.reply_text(help_text, parse_mode="Markdown")
 
@@ -125,20 +130,21 @@ def main():
     # Add error handler
     application.add_error_handler(error_handler)
     
-    print("=" * 50)
-    print("🤖 Post Navigator Bot Starting...")
-    print("=" * 50)
-    print("✅ Bot is now running!")
+    print("=" * 60)
+    print("🤖 Post Navigator Bot Запускается...")
+    print("=" * 60)
+    print("✅ Бот запущен и работает!")
     print("")
-    print("📱 Available Commands:")
-    print("   /start - Open main menu")
-    print("   /post - Post to channel")
-    print("   /admin - Access admin panel")
-    print("   /help - Show help")
+    print("📱 Доступные Команды:")
+    print("   /start - Открыть главное меню")
+    print("   /post - Отправить в канал")
+    print("   /admin - Открыть админ панель")
+    print("   /help - Показать помощь")
     print("")
     print(f"🌐 Mini App URL: {WEBAPP_URL}")
     print(f"🔧 Admin Panel: {WEBAPP_URL}/admin")
-    print("=" * 50)
+    print(f"🔑 Admin Password: vvsh2024")
+    print("=" * 60)
     
     # Start polling
     application.run_polling()
