@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Telegram Mini App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .auth-section {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .auth-form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .auth-form h2 {
+            color: #2d3748;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4a5568;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #a0aec0 0%, #718096 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f56565 0%, #c53030 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        .content-section {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .section-header h2 {
+            color: #2d3748;
+            font-size: 1.8rem;
+            font-weight: 600;
+        }
+
+        .categories-list {
+            display: grid;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .category-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            border-color: #cbd5e0;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .category-title {
+            color: #2d3748;
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+
+        .category-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            border-radius: 8px;
+            min-width: 80px;
+        }
+
+        .posts-list {
+            margin-top: 20px;
+        }
+
+        .post-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .post-info {
+            flex: 1;
+        }
+
+        .post-title {
+            color: #2d3748;
+            font-weight: 500;
+            margin-bottom: 4px;
+            font-size: 1.1rem;
+        }
+
+        .post-url {
+            color: #718096;
+            font-size: 0.9rem;
+            word-break: break-all;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .modal-title {
+            color: #2d3748;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #718096;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-modal:hover {
+            background: #f7fafc;
+            color: #2d3748;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #c6f6d5 0%, #9ae6b4 100%);
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #fed7d7 0%, #feb2b2 100%);
+            color: #742a2a;
+            border: 1px solid #feb2b2;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #718096;
+        }
+
+        .loading::after {
+            content: '';
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-left: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #4a5568;
+            font-weight: 500;
+        }
+
+        .telegram-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #0088cc 0%, #006699 100%);
+            color: white;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .telegram-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 136, 204, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .category-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .category-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            
+            .post-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .post-actions {
+                width: 100%;
+                justify-content: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔧 Панель Администратора</h1>
+            <p>Управление контентом Telegram Mini App</p>
+        </div>
+
+        <!-- Authentication Section -->
+        <div id="authSection" class="auth-section">
+            <div class="auth-form">
+                <h2>🔐 Авторизация</h2>
+                <div id="authAlert" class="alert"></div>
+                <div class="form-group">
+                    <label for="password">Пароль администратора</label>
+                    <input type="password" id="password" class="form-control" placeholder="Введите пароль">
+                </div>
+                <button id="loginBtn" class="btn">Войти</button>
+            </div>
+        </div>
+
+        <!-- Main Content Section -->
+        <div id="contentSection" class="content-section">
+            <div class="toolbar">
+                <div class="user-info">
+                    <span>👤 Администратор</span>
+                    <span id="userId"></span>
+                </div>
+                <button id="logoutBtn" class="btn btn-secondary">Выйти</button>
+            </div>
+
+            <!-- Add Category Button -->
+            <div style="margin-bottom: 30px;">
+                <button id="addCategoryBtn" class="btn btn-success">➕ Добавить категорию</button>
+            </div>
+
+            <!-- Categories List -->
+            <div class="section-header">
+                <h2>📁 Категории</h2>
+                <button id="refreshBtn" class="btn btn-secondary">🔄 Обновить</button>
+            </div>
+            
+            <div id="loading" class="loading">Загрузка...</div>
+            <div id="categoriesList" class="categories-list"></div>
+
+            <!-- Alert Messages -->
+            <div id="alert" class="alert" style="display: none;"></div>
+        </div>
+    </div>
+
+    <!-- Add Category Modal -->
+    <div id="addCategoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">➕ Новая категория</h3>
+                <button class="close-modal" onclick="closeModal('addCategoryModal')">&times;</button>
+            </div>
+            <div class="form-group">
+                <label for="categoryName">Название категории</label>
+                <input type="text" id="categoryName" class="form-control" placeholder="Например: 📚 Новые книги">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="addCategory()" class="btn btn-success">Добавить</button>
+                <button onclick="closeModal('addCategoryModal')" class="btn btn-secondary">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rename Category Modal -->
+    <div id="renameCategoryModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ Переименовать категорию</h3>
+                <button class="close-modal" onclick="closeModal('renameCategoryModal')">&times;</button>
+            </div>
+            <input type="hidden" id="currentCategoryName">
+            <div class="form-group">
+                <label for="newCategoryName">Новое название</label>
+                <input type="text" id="newCategoryName" class="form-control">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="renameCategory()" class="btn btn-success">Сохранить</button>
+                <button onclick="closeModal('renameCategoryModal')" class="btn btn-secondary">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Post Modal -->
+    <div id="addPostModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">📝 Добавить запись</h3>
+                <button class="close-modal" onclick="closeModal('addPostModal')">&times;</button>
+            </div>
+            <input type="hidden" id="postCategoryName">
+            <div class="form-group">
+                <label for="postTitle">Заголовок</label>
+                <input type="text" id="postTitle" class="form-control" placeholder="Название записи">
+            </div>
+            <div class="form-group">
+                <label for="postUrl">URL</label>
+                <input type="text" id="postUrl" class="form-control" placeholder="https://t.me/channel/123">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="addPost()" class="btn btn-success">Добавить</button>
+                <button onclick="closeModal('addPostModal')" class="btn btn-secondary">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Post Modal -->
+    <div id="editPostModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">✏️ Редактировать запись</h3>
+                <button class="close-modal" onclick="closeModal('editPostModal')">&times;</button>
+            </div>
+            <input type="hidden" id="editPostCategoryName">
+            <input type="hidden" id="editPostIndex">
+            <div class="form-group">
+                <label for="editPostTitle">Заголовок</label>
+                <input type="text" id="editPostTitle" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="editPostUrl">URL</label>
+                <input type="text" id="editPostUrl" class="form-control">
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button onclick="updatePost()" class="btn btn-success">Сохранить</button>
+                <button onclick="closeModal('editPostModal')" class="btn btn-secondary">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Telegram Web App Init
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.MainButton.hide();
+        
+        let isAuthenticated = false;
+        let userId = null;
+        let authToken = null;
+
+        // DOM Elements
+        const authSection = document.getElementById('authSection');
+        const contentSection = document.getElementById('contentSection');
+        const authAlert = document.getElementById('authAlert');
+        const categoriesList = document.getElementById('categoriesList');
+        const loading = document.getElementById('loading');
+        const alertBox = document.getElementById('alert');
+
+        // Try to get user ID from Telegram Web App
+        try {
+            const initData = tg.initDataUnsafe;
+            if (initData && initData.user) {
+                userId = initData.user.id;
+                document.getElementById('userId').textContent = `(ID: ${userId})`;
+            }
+        } catch (e) {
+            console.log('Not in Telegram Web App context');
+        }
+
+        // Event Listeners
+        document.getElementById('loginBtn').addEventListener('click', login);
+        document.getElementById('logoutBtn').addEventListener('click', logout);
+        document.getElementById('addCategoryBtn').addEventListener('click', () => openModal('addCategoryModal'));
+        document.getElementById('refreshBtn').addEventListener('click', loadCategories);
+
+        // Functions
+        async function login() {
+            const password = document.getElementById('password').value;
+            
+            if (!password) {
+                showAuthAlert('Введите пароль', 'error');
+                return;
+            }
+
+            // If not in Telegram, ask for user ID
+            if (!userId) {
+                const manualUserId = prompt('Введите ваш Telegram User ID:');
+                if (!manualUserId) {
+                    showAuthAlert('Требуется User ID', 'error');
+                    return;
+                }
+                userId = parseInt(manualUserId);
+                document.getElementById('userId').textContent = `(ID: ${userId})`;
+            }
+
+            try {
+                const response = await fetch('/api/admin/auth', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        password: password,
+                        user_id: userId
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    isAuthenticated = true;
+                    authToken = btoa(`${userId}:${password}`);
+                    
+                    authSection.style.display = 'none';
+                    contentSection.style.display = 'block';
+                    
+                    document.getElementById('password').value = '';
+                    showAlert('Авторизация успешна!', 'success');
+                    loadCategories();
+                } else {
+                    const error = await response.json();
+                    showAuthAlert(error.detail || 'Ошибка авторизации', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showAuthAlert('Ошибка соединения', 'error');
+            }
+        }
+
+        function logout() {
+            isAuthenticated = false;
+            authToken = null;
+            userId = null;
+            
+            contentSection.style.display = 'none';
+            authSection.style.display = 'block';
+            
+            document.getElementById('userId').textContent = '';
+            showAuthAlert('Вы вышли из системы', 'success');
+        }
+
+        async function loadCategories() {
+            try {
+                loading.style.display = 'block';
+                categoriesList.innerHTML = '';
+                
+                const response = await fetch('/api/categories');
+                const categories = await response.json();
+                
+                loading.style.display = 'none';
+                
+                if (Object.keys(categories).length === 0) {
+                    categoriesList.innerHTML = `
+                        <div style="text-align: center; padding: 40px; color: #718096;">
+                            <p>Нет категорий. Добавьте первую категорию!</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                Object.entries(categories).forEach(([categoryName, posts]) => {
+                    const categoryCard = document.createElement('div');
+                    categoryCard.className = 'category-card';
+                    
+                    const postsHtml = posts.map((post, index) => `
+                        <div class="post-item">
+                            <div class="post-info">
+                                <div class="post-title">${post.title}</div>
+                                <div class="post-url">${post.url}</div>
+                            </div>
+                            <div class="post-actions">
+                                <button onclick="editPost('${categoryName}', ${index})" class="btn btn-small">✏️</button>
+                                <button onclick="deletePost('${categoryName}', ${index})" class="btn btn-small btn-danger">🗑️</button>
+                            </div>
+                        </div>
+                    `).join('');
+                    
+                    categoryCard.innerHTML = `
+                        <div class="category-header">
+                            <div class="category-title">${categoryName}</div>
+                            <div class="category-actions">
+                                <button onclick="openAddPostModal('${categoryName}')" class="btn btn-small btn-success">➕</button>
+                                <button onclick="openRenameModal('${categoryName}')" class="btn btn-small">✏️</button>
+                                <button onclick="deleteCategory('${categoryName}')" class="btn btn-small btn-danger">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="posts-list">
+                            ${posts.length > 0 ? postsHtml : `
+                                <div style="text-align: center; padding: 20px; color: #a0aec0;">
+                                    Нет записей в этой категории
+                                </div>
+                            `}
+                        </div>
+                    `;
+                    
+                    categoriesList.appendChild(categoryCard);
+                });
+            } catch (error) {
+                console.error('Error loading categories:', error);
+                loading.style.display = 'none';
+                showAlert('Ошибка загрузки категорий', 'error');
+            }
+        }
+
+        async function addCategory() {
+            const categoryName = document.getElementById('categoryName').value.trim();
+            
+            if (!categoryName) {
+                showAlert('Введите название категории', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/categories/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Basic ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        category: categoryName,
+                        password: atob(authToken).split(':')[1],
+                        user_id: userId
+                    })
+                });
+                
+                if (response.ok) {
+                    closeModal('addCategoryModal');
+                    document.getElementById('categoryName').value = '';
+                    showAlert('Категория добавлена!', 'success');
+                    loadCategories();
+                } else {
+                    const error = await response.json();
+                    showAlert(error.detail, 'error');
+                }
+            } catch (error) {
+                console.error('Error adding category:', error);
+                showAlert('Ошибка добавления категории', 'error');
+            }
+        }
+
+        async function deleteCategory(categoryName) {
+            if (!confirm(`Удалить категорию "${categoryName}" и все записи в ней?`)) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/categories/${encodeURIComponent(categoryName)}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Basic ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        password: atob(authToken).split(':')[1],
+                        user_id: userId
+                    })
+                });
+                
+                if (response.ok) {
+                    showAlert('Категория удалена!', 'success');
+                    loadCategories();
+                } else {
+                    const error = await response.json();
+                    showAlert(error.detail, 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting category:', error);
+                showAlert('Ошибка удаления категории', 'error');
+            }
+        }
+
+        function openAddPostModal(categoryName) {
+            document.getElementById('postCategoryName').value = categoryName;
+            openModal('addPostModal');
+        }
+
+        async function addPost() {
+            const categoryName = document.getElementById('postCategoryName').value;
+            const title = document.getElementById('postTitle').value.trim();
+            const url = document.getElementById('postUrl').value.trim();
+            
+            if (!title || !url) {
+                showAlert('Заполните все поля', 'error');
+                return;
+            }
+            
+            if (!url.startsWith('http')) {
+                showAlert('URL должен начинаться с http:// или https://', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/categories/${encodeURIComponent(categoryName)}/posts`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Basic ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        post: { title, url },
+                        password: atob(authToken).split(':')[1],
+                        user_id: userId
+                    })
+                });
+                
+                if (response.ok) {
+                    closeModal('addPostModal');
+                    document.getElementById('postTitle').value = '';
+                    document.getElementById('postUrl').value = '';
+                    showAlert('Запись добавлена!', 'success');
+                    loadCategories();
+                } else {
+                    const error = await response.json();
+                    showAlert(error.detail, 'error');
+                }
+            } catch (error) {
+                console.error('Error adding post:', error);
+                showAlert('Ошибка добавления записи', 'error');
+            }
+        }
+
+        function editPost(categoryName, postIndex) {
+            fetch('/api/categories')
+                .then(response => response.json())
+                .then(categories => {
+                    const post = categories[categoryName][postIndex];
+                    document.getElementById('editPostCategoryName').value = categoryName;
+                    document.getElementById('editPostIndex').value = postIndex;
+                    document.getElementById('editPostTitle').value = post.title;
+                    document.getElementById('editPostUrl').value = post.url;
+                    openModal('editPostModal');
+                })
+                .catch(error => {
+                    console.error('Error loading post:', error);
+                    showAlert('Ошибка загрузки записи', 'error');
+                });
+        }
+
+        async function updatePost() {
+            const categoryName = document.getElementById('editPostCategoryName').value;
+            const postIndex = document.getElementById('editPostIndex').value;
+            const title = document.getElementById('editPostTitle').value.trim();
+            const url = document.getElementById('editPostUrl').value.trim();
+            
+            if (!title || !url) {
+                showAlert('Заполните все поля', 'error');
+                return;
+            }
+            
+            if (!url.startsWith('http')) {
+                showAlert('URL должен начинаться с http:// или https://', 'error');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/categories/${encodeURIComponent(categoryName)}/posts/${postIndex}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Basic ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        post: { title, url },
+                        password: atob(authToken).split(':')[1],
+                        user_id: userId
+                    })
+                });
+                
+                if (response.ok) {
+                    closeModal('editPostModal');
+                    showAlert('Запись обновлена!', 'success');
+                    loadCategories();
+                } else {
+                    const error = await response.json();
+                    showAlert(error.detail, 'error');
+                }
+            } catch (error) {
+                console.error('Error updating post:', error);
+                showAlert('Ошибка обновления записи', 'error');
+            }
+        }
+
+        async function deletePost(categoryName, postIndex) {
+            if (!confirm('Удалить эту запись?')) {
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/categories/${encodeURIComponent(categoryName)}/posts/${postIndex}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Basic ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        password: atob(authToken).split(':')[1],
+                        user_id: userId
+                    })
+                });
+                
+                if (response.ok) {
+                    showAlert('Запись удалена!', 'success');
+                    loadCategories();
+                } else {
+                    const error = await response.json();
+                    showAlert(error.detail, 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting post:', error);
+                showAlert('Ошибка удаления записи', 'error');
+            }
+        }
+
+        function openRenameModal(categoryName) {
+            document.getElementById('currentCategoryName').value = categoryName;
+            document.getElementById('newCategoryName').value = categoryName;
+            openModal('renameCategoryModal');
+        }
+
+        async function renameCategory() {
+            const oldName = document.getElementById('currentCategoryName').value;
+            const newName = document.getElementById('newCategoryName').value.trim();
+            
+            if (!newName) {
+                showAlert('Введите новое название', 'error');
+                return;
+            }
+            
+            if (oldName === newName) {
+                closeModal('renameCategoryModal');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/categories/${encodeURIComponent(oldName)}/rename`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Basic ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        new_name: newName,
+                        password: atob(authToken).split(':')[1],
+                        user_id: userId
+                    })
+                });
+                
+                if (response.ok) {
+                    closeModal('renameCategoryModal');
+                    showAlert('Категория переименована!', 'success');
+                    loadCategories();
+                } else {
+                    const error = await response.json();
+                    showAlert(error.detail, 'error');
+                }
+            } catch (error) {
+                console.error('Error renaming category:', error);
+                showAlert('Ошибка переименования категории', 'error');
+            }
+        }
+
+        // Modal functions
+        function openModal(modalId) {
+            if (!isAuthenticated) {
+                showAlert('Требуется авторизация', 'error');
+                return;
+            }
+            document.getElementById(modalId).style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function showAuthAlert(message, type) {
+            authAlert.textContent = message;
+            authAlert.className = `alert alert-${type}`;
+            authAlert.style.display = 'block';
+            
+            setTimeout(() => {
+                authAlert.style.display = 'none';
+            }, 3000);
+        }
+
+        function showAlert(message, type) {
+            alertBox.textContent = message;
+            alertBox.className = `alert alert-${type}`;
+            alertBox.style.display = 'block';
+            
+            setTimeout(() => {
+                alertBox.style.display = 'none';
+            }, 3000);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if we're in Telegram Web App
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                document.getElementById('password').focus();
+            }
+        });
+    </script>
+</body>
+</html>
