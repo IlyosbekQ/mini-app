@@ -27,7 +27,7 @@ BOT_TOKEN = os.getenv("BOT_TOKEN")
 CHANNEL_ID = os.getenv("CHANNEL_ID")
 WEBAPP_URL = os.getenv("WEBAPP_URL")
 ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
-ALLOWED_ADMIN_IDS_STR = os.getenv("ALLOWED_ADMIN_IDS", "959805916", "1044268134")
+ALLOWED_ADMIN_IDS_STR = os.getenv("ALLOWED_ADMIN_IDS", "959805916")
 
 # Parse admin IDs from comma-separated string
 ALLOWED_ADMIN_IDS = [int(id.strip()) for id in ALLOWED_ADMIN_IDS_STR.split(",")]
@@ -413,4 +413,5 @@ if __name__ == "__main__":
     print(f"🔑 Admin Password: {ADMIN_PASSWORD}")
     print("=" * 60 + "\n")
     
+
     uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
